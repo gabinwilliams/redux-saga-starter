@@ -5,6 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
+import {put, takeEvery} from 'redux-saga/effects';
 import logger from 'redux-logger';
 
 const firstReducer = (state = 0, action) => {
@@ -34,12 +35,17 @@ const elementListReducer = (state = [], action) => {
     }
 };    
 
-// this is the saga that will watch for actions
-function* watcherSaga() {
+function* firstSaga(action) {
+    console.log('in first saga:', action);
 
 }
 
+// this is the saga that will watch for actions
+function* watcherSaga() {
+    yield takeEvery('SET_ELEMENTS', firstSaga);
+}
 
+// create our sagaMiddleware
 const sagaMiddleware = createSagaMiddleware();
 
 // This is creating the store
@@ -55,6 +61,7 @@ const storeInstance = createStore(
     applyMiddleware(sagaMiddleware, logger),
 );
 
+// use the saga watcher
 sagaMiddleware.run(watcherSaga);
 
 ReactDOM.render(<Provider store={storeInstance}><App/></Provider>, document.getElementById('root'));
