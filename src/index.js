@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import ReactDOM from 'react-dom';
 import App from './components/App/App.jsx';
 import registerServiceWorker from './registerServiceWorker';
@@ -37,6 +38,15 @@ const elementListReducer = (state = [], action) => {
 
 function* firstSaga(action) {
     console.log('in first saga:', action);
+    // try an axios call to server
+    // put (like dispatch) to send to existing reducer
+    try{
+        const response = yield axios.get('/api/element')
+        yield put({type: 'SET_ELEMENTS', payload: response.data});
+
+    }catch(err) {
+        console.log(err);
+    }
 
 }
 
